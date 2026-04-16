@@ -26,11 +26,18 @@ public class AuthenticationInterceptor implements Interceptor {
 
     private final String referer;
 
+    private final boolean demoTrading;
+
     public AuthenticationInterceptor(String apiKey, String secret, Long recvWindow, String referer) {
+        this(apiKey, secret, recvWindow, referer, false);
+    }
+
+    public AuthenticationInterceptor(String apiKey, String secret, Long recvWindow, String referer, boolean demoTrading) {
         this.apiKey = apiKey;
         this.secret = secret;
         this.recvWindow = recvWindow;
         this.referer = referer;
+        this.demoTrading = demoTrading;
     }
 
     @NotNull
@@ -66,6 +73,7 @@ public class AuthenticationInterceptor implements Interceptor {
             newRequestBuilder.addHeader(BybitApiConstants.USER_AGENT_HEADER, BybitApiConstants.AGENT_NAME + "/" + BybitApiConstants.VERSION);
             newRequestBuilder.addHeader(BybitApiConstants.CONNECTION_HEADER, BybitApiConstants.KEEP_ALIVE);
             if(StringUtils.isNotEmpty(referer))newRequestBuilder.addHeader(BybitApiConstants.BROKER_HEADER, referer);
+            if(demoTrading)newRequestBuilder.addHeader("X-BAPI-DEMO-TRADING", "1");
         }
         Request newRequest = newRequestBuilder.build();
         return chain.proceed(newRequest);

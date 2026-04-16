@@ -31,7 +31,15 @@ public final class WebSocketStreamHttpClientSingleton {
     }
 
     public WebSocket createWebSocket(String url, WebSocketListener listener) {
-        Request request = new Request.Builder().url(url).build();
+        return createWebSocket(url, listener, false);
+    }
+
+    public WebSocket createWebSocket(String url, WebSocketListener listener, boolean demoTrading) {
+        Request.Builder reqBuilder = new Request.Builder().url(url);
+        if (demoTrading) {
+            reqBuilder.addHeader("X-BAPI-DEMO-TRADING", "1");
+        }
+        Request request = reqBuilder.build();
         OkHttpClient okHttpClient = createOkHttpClient(debugMode, logOption);
         return okHttpClient.newWebSocket(request, listener);
     }

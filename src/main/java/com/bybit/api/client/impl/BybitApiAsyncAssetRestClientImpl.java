@@ -22,7 +22,11 @@ public class BybitApiAsyncAssetRestClientImpl implements BybitApiAsyncAssetRestC
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
     public BybitApiAsyncAssetRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, "");
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, "", false);
+    }
+
+    public BybitApiAsyncAssetRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption, boolean demoTrading) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, "", demoTrading);
     }
 
     // Asset endpoints

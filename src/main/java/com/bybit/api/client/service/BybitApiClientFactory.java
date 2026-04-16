@@ -52,14 +52,15 @@ public class BybitApiClientFactory {
     private final String referer;
 
     /**
-     * Instantiates a new Bybit api client factory.
-     *
-     * @param apiKey    api key
-     * @param secret    api secret
-     * @param baseUrl   base url
-     * @param debugMode debugMode
+     * Demo trading mode — adds X-BAPI-DEMO-TRADING header to all authenticated requests
      */
+    private final boolean demoTrading;
+
     private BybitApiClientFactory(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption, String referer) {
+        this(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, referer, false);
+    }
+
+    private BybitApiClientFactory(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption, String referer, boolean demoTrading) {
         this.apiKey = apiKey;
         this.secret = secret;
         this.baseUrl = baseUrl;
@@ -67,6 +68,7 @@ public class BybitApiClientFactory {
         this.recvWindow = recvWindow;
         this.logOption = logOption;
         this.referer = referer;
+        this.demoTrading = demoTrading;
     }
 
     /**
@@ -236,30 +238,34 @@ public class BybitApiClientFactory {
         return new BybitApiClientFactory(apiKey, secret, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, logOption, "");
     }
 
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, String baseUrl, boolean debugMode, String logOption, boolean demoTrading) {
+        return new BybitApiClientFactory(apiKey, secret, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, logOption, "", demoTrading);
+    }
+
     /**
      * Creates a new synchronous/blocking REST client to spot leverage token and spot margin endpoints.
      */
     public BybitApiSpotMarginRestClient newSpotMarginRestClient() {
-        return new BybitApiSpotMarginRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiSpotMarginRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
 
     public BybitApiAsyncSpotMarginRestClient newSpotMarginAsyncRestClient() {
-        return new BybitApiAsyncSpotMarginRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAsyncSpotMarginRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new synchronous/blocking REST client.
      */
     public BybitApiUserRestClient newUserRestClient() {
-        return new BybitApiUserRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiUserRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new asynchronous/non-blocking REST client to User and upgrade endpoints.
      */
     public BybitApiAsyncUserRestClient newAsyncUserRestClient() {
-        return new BybitApiAsyncUserRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAsyncUserRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
@@ -280,98 +286,98 @@ public class BybitApiClientFactory {
      * Creates a new synchronous/blocking REST client to Institution and Broker Endpoints
      */
     public BybitApiLendingRestClient newLendingRestClient() {
-        return new BybitApiLendingRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiLendingRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new asynchronous/non-blocking REST client to Institution Lending Endpoints
      */
     public BybitApiAsyncLendingRestClient newAsyncLendingRestClient() {
-        return new BybitApiAsyncLendingRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAsyncLendingRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to trading
      */
     public BybitApiTradeRestClient newTradeRestClient() {
-        return new BybitApiTradeRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, referer);
+        return new BybitApiTradeRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, referer, demoTrading);
     }
 
     /**
      * Creates a new asynchronous/non-blocking REST client to trading
      */
     public BybitApiAsyncTradeRestClient newAsyncTradeRestClient() {
-        return new BybitApiTradeAsyncRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, referer);
+        return new BybitApiTradeAsyncRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, referer, demoTrading);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to position data
      */
     public BybitApiPositionRestClient newPositionRestClient() {
-        return new BybitApiPositionRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiPositionRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to position data
      */
     public BybitApiAsyncPositionRestClient newAsyncPositionRestClient() {
-        return new BybitApiAsyncPositionRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAsyncPositionRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to Account data
      */
     public BybitApiAccountRestClient newAccountRestClient() {
-        return new BybitApiAccountRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAccountRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to Account data
      */
     public BybitApiAsyncAccountRestClient newAsyncAccountRestClient() {
-        return new BybitApiAsyncAccountRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAsyncAccountRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to Asset data
      */
     public BybitApiAssetRestClient newAssetRestClient() {
-        return new BybitApiAssetRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAssetRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to Asset data
      */
     public BybitApiAsyncAssetRestClient newAsyncAssetRestClient() {
-        return new BybitApiAsyncAssetRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAsyncAssetRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to Broker earning data
      */
     public BybitApiBrokerRestClient newBrokerRestClient() {
-        return new BybitApBrokerRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApBrokerRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to Broker earning data
      */
     public BybitApiAsyncBrokerRestClient newAsyncBrokerRestClient() {
-        return new BybitApiAsyncBrokerRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAsyncBrokerRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to Crypto Loan data
      */
     public BybitApiLoanRestClient newCryptoLoanRestClient() {
-        return new BybitApiLoanRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiLoanRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to Crypto Loan data
      */
     public BybitApiAsyncLoanRestClient newAsyncCryptoLoanRestClient() {
-        return new BybitApiAsyncLoanRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAsyncLoanRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 
     /**
@@ -409,6 +415,6 @@ public class BybitApiClientFactory {
     }
 
     public BybitApiAffiliateRestClient newAffiliateRestClient() {
-        return new BybitApiAffiliateRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiAffiliateRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, demoTrading);
     }
 }

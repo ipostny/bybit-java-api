@@ -45,11 +45,16 @@ public class WebsocketStreamClientImpl implements WebsocketStreamClient {
     private final String logOption;
     private final Integer pingInterval;
     private final String maxAliveTime;
+    private final boolean demoTrading;
     private List<String> argNames;
     private Map<String,Object> params;
     private String path;
 
     public WebsocketStreamClientImpl(String apikey, String secret, String baseUrl, Integer pingInterval, String maxAliveTime, Boolean debugMode, String logOption, WebSocketMessageCallback webSocketMessageCallback) {
+        this(apikey, secret, baseUrl, pingInterval, maxAliveTime, debugMode, logOption, webSocketMessageCallback, false);
+    }
+
+    public WebsocketStreamClientImpl(String apikey, String secret, String baseUrl, Integer pingInterval, String maxAliveTime, Boolean debugMode, String logOption, WebSocketMessageCallback webSocketMessageCallback, boolean demoTrading) {
         this.webSocketMessageCallback = webSocketMessageCallback;
         this.apikey = apikey;
         this.secret = secret;
@@ -58,6 +63,7 @@ public class WebsocketStreamClientImpl implements WebsocketStreamClient {
         this.debugMode = debugMode;
         this.logOption = logOption;
         this.maxAliveTime = maxAliveTime;
+        this.demoTrading = demoTrading;
         webSocketHttpClientSingleton = WebSocketStreamHttpClientSingleton.createInstance(this.debugMode, this.logOption);
     }
 
@@ -317,7 +323,7 @@ public class WebsocketStreamClientImpl implements WebsocketStreamClient {
     public WebSocket connect() {
         String wssUrl = getWssUrl();
         LOGGER.info(wssUrl);
-        this.webSocket = webSocketHttpClientSingleton.createWebSocket(wssUrl, createWebSocketListener());
+        this.webSocket = webSocketHttpClientSingleton.createWebSocket(wssUrl, createWebSocketListener(), demoTrading);
 
         // Start the ping thread immediately.
         Thread pingThread = createPingThread();

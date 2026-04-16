@@ -15,7 +15,11 @@ public class BybitApiLoanRestClientImpl implements BybitApiLoanRestClient {
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
     public BybitApiLoanRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, "");
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, "", false);
+    }
+
+    public BybitApiLoanRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption, boolean demoTrading) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, "", demoTrading);
     }
 
     @Override

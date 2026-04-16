@@ -71,12 +71,16 @@ public class BybitApiServiceGenerator {
      * @return a new implementation of the API endpoints for the Bybit API service.
      */
     public static <S> S createService(Class<S> serviceClass, String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption, String referer) {
+        return createService(serviceClass, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, referer, false);
+    }
+
+    public static <S> S createService(Class<S> serviceClass, String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption, String referer, boolean demoTrading) {
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(converterFactory);
         OkHttpClient.Builder clientBuilder = sharedClient.newBuilder();
         if (!StringUtils.isEmpty(apiKey) && !StringUtils.isEmpty(secret)) {
-            AuthenticationInterceptor interceptor = new AuthenticationInterceptor(apiKey, secret, recvWindow, referer);
+            AuthenticationInterceptor interceptor = new AuthenticationInterceptor(apiKey, secret, recvWindow, referer, demoTrading);
             clientBuilder.addInterceptor(interceptor);
             clientBuilder.connectTimeout(5_000, TimeUnit.MILLISECONDS);
             clientBuilder.readTimeout(10_000, TimeUnit.MILLISECONDS);
